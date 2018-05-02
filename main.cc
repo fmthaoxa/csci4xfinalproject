@@ -10,11 +10,11 @@ int main () {
 
 	save.hello();
 
-	save.new_save("cat");
+	save.new_save("Aaron");
 
 	while(true) {
 		cout << "Enter a name to save" << endl;
 		cin >> name;
 		save.save(name,1,2,3);
 	}
-}	
+}

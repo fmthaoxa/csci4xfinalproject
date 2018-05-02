@@ -21,10 +21,14 @@ bool file_exists(const std::string& filename) {
 
 
 void Save::new_save(std::string name ) {
+	
+	std::string newsave = "./savefolder/"+name;
 
+	std::cout << name << std::endl;
+	std::cout << newsave << std::endl;
 
 	std::ofstream file;
-	file.open(name);
+	file.open(newsave);
 	file << name << std::endl;
 	file << 0 << std::endl;
 	file << 0 << std::endl;
@@ -32,7 +36,7 @@ void Save::new_save(std::string name ) {
 	file.close();
 
 
-	std::cout << "this is the new save" << std::endl;
+	std::cout << "save.new_save ran." << std::endl;
 
 
 }
