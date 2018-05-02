@@ -11,6 +11,10 @@ int main () {
 	save.hello();
 
 	save.new_save("Aaron");
+	save.new_save("John");
+	save.new_save("Batman");
+
+	save.print_save_files();
 
 	while(true) {
 		cout << "Enter a name to save" << endl;

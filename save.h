@@ -13,6 +13,8 @@ class Save {
 
 		void new_save(std::string new_name);
 
+		void print_save_files();
+
 };
 
 #endif

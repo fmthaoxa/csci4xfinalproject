@@ -11,11 +11,14 @@ void Save::hello() {
 }
 
 bool file_exists(const std::string& filename) {
+
+
 	struct stat buf;
 	if (stat(filename.c_str(), &buf) != -1) {
 		return true;
 	}
 	return false;
+
 
 }
 
@@ -56,3 +59,37 @@ void Save::save(std::string name, int new_foo, int new_bar, int new_baz) {
 		std::cout << "File does not exist\n";
 	}
 }
+
+
+
+void Save::print_save_files() {
+	std::cout << "This is the list of save files" << std::endl;
+	DIR *dpdf;
+	struct dirent *epdf;
+
+	dpdf = opendir("./savefolder/");
+
+	if (dpdf !=NULL) {
+		while (epdf = readdir(dpdf)) {
+			std::cout << epdf->d_name << std:: endl;
+		}
+	}
+
+	closedir(dpdf);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
