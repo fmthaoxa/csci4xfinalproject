@@ -80,7 +80,22 @@ void Save::print_save_files() {
 }
 
 
+void Save::load_save(std::string save_file) {
+	std::string file_loaded = "./savefolder/" + save_file;
+	std::string line;
+	std::ifstream file(file_loaded);
 
+	if (file.is_open()) {
+		while ( std::getline(file, line)) {
+			std::cout << line;
+		}
+		file.close();
+	}
+	else {
+		std::cout << "Cannot find file!" << std::endl;
+	}
+
+}
 
 
 

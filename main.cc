@@ -15,10 +15,14 @@ int main () {
 	save.new_save("Batman");
 
 	save.print_save_files();
-
+	
+	save.load_save("cat");
+	save.load_save("Batman");
+	/*
 	while(true) {
 		cout << "Enter a name to save" << endl;
 		cin >> name;
 		save.save(name,1,2,3);
 	}
+	*/
 }

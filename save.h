@@ -14,7 +14,8 @@ class Save {
 		void new_save(std::string new_name);
 
 		void print_save_files();
-
+		
+		void load_save(std::string save_file);
 };
 
 #endif
