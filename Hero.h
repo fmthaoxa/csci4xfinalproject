@@ -69,10 +69,10 @@ class Hero {
 		x = new_x;
 		y = new_y;
 	}
-	void damage(int danar, bool verbose = false) {
+	/*void damage(int danar, bool verbose = false) {
 		if (!alive) return;
 		health -= danar;
 		if (health <= 0) alive = false;
 		if (verbose) cout << name << "'s health is: " << health << endl;
-	}
+	}*/
 };
