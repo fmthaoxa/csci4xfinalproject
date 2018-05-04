@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include "foo.h"
 #include "save.h"
 using namespace std;
 
@@ -7,6 +8,7 @@ using namespace std;
 int main () {
 	string name;
 	Save save;
+	Foo foo;
 
 	save.hello();
 
@@ -16,8 +18,7 @@ int main () {
 
 	save.print_save_files();
 	
-	save.load_save("cat");
-	save.load_save("Batman");
+	save.load_save("Batman", foo);
 	/*
 	while(true) {
 		cout << "Enter a name to save" << endl;

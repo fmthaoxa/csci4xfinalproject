@@ -15,7 +15,7 @@ class Save {
 
 		void print_save_files();
 		
-		void load_save(std::string save_file);
+		void load_save(std::string save_file, Foo foo);
 };
 
 #endif

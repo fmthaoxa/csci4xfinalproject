@@ -3,6 +3,8 @@
 #include <fstream>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <sstream>
+#include "foo.h"
 #include "save.h"
 
 
@@ -33,9 +35,9 @@ void Save::new_save(std::string name ) {
 	std::ofstream file;
 	file.open(newsave);
 	file << name << std::endl;
-	file << 0 << std::endl;
-	file << 0 << std::endl;
-	file << 0 << std::endl;
+	file << 1 << std::endl;
+	file << 1 << std::endl;
+	file << 1 << std::endl;
 	file.close();
 
 
@@ -80,21 +82,49 @@ void Save::print_save_files() {
 }
 
 
-void Save::load_save(std::string save_file) {
+void Save::load_save(std::string save_file, Foo foo) {
 	std::string file_loaded = "./savefolder/" + save_file;
 	std::string line;
 	std::ifstream file(file_loaded);
+	int counter = 0;
+	
+	foo.print();
+	std::cout << std::endl;
+	
 
 	if (file.is_open()) {
-		while ( std::getline(file, line)) {
-			std::cout << line;
+		
+		while (getline(file, line))
+		{	
+			if(counter == 4) break;
+			if(counter == 0) {
+				std::cout << line << std::endl;
+				foo.set_name(line);
+			}
+			else if (counter == 1) {
+				foo.set_a(atoi(line.c_str()));
+			}
+			else if (counter == 2) {
+				foo.set_b(atoi(line.c_str()));
+			}
+			else if (counter == 3) {
+				foo.set_c(atoi(line.c_str()));
+			}
+			counter++;
 		}
+		
+		/*
+		std::getline(file,line);
+		std::cout << line << std::endl;
+		foo.set_name(line);
+		*/
 		file.close();
 	}
 	else {
 		std::cout << "Cannot find file!" << std::endl;
 	}
-
+	
+	foo.print();
 }
 
 
