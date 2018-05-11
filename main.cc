@@ -8,16 +8,23 @@
 #include <vector>
 #include <queue>
 #include <set>
-#include "splash.h"
-#include <string>
 #include "save.h"
-using namespace std;
+#include <string>
+#include <fstream>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <sstream>
+#include<dirent.h>
+#include<stdio.h>
+#include <string.h>
 
+using namespace std;
+class Save;
 class Monster;
 class Key;
 const unsigned char OPEN = ' '; //An open space
 const unsigned char WALL = '#'; //A wall space; impassable
-const unsigned char MONSTER = 'M'; //Eats herbivores
+const unsigned char MONSTER = 'M';
 const unsigned char KEY = 'K';
 const unsigned char PLAYER='P';
 //Globals holding game state
@@ -33,7 +40,7 @@ const int UP = 65; //Key code for up arrow
 const int DOWN = 66;
 const int LEFT = 68;
 const int RIGHT = 67;
-
+vector <string> filenames;
 //2D to 1D array mapping
 //NOTE: creates a circular array
 //For example, access the world location (3,2) like this:
@@ -45,6 +52,76 @@ int index(int i, int j) {
 	if (j >= SIZE_Y) j %= SIZE_Y;
 	return (i * SIZE_Y + j);
 }
+/*	bool file_exists( const string& filename){
+	if (stat(filename.c_str())!=1){
+	return true;
+	}else return false;
+	}*/
+void new_save(string name){
+	string newsave = "./savefolder/"+name;
+	cout<<name<<endl<<newsave<<endl;
+	ofstream file;
+	file.open (newsave);
+	cout<< "save.new_save ran.\n";
+}void save(string name, int score) {
+	string newname="./savefolder/"+name;
+	ofstream file;
+	file.open(newname);
+	file<<name<<endl;
+	file<<score<<endl;
+	/*	for (int i = 0; i<mm.size();i++){
+		file<<mm.x.at(i)<<mm.y.at(i)<<endl;
+		}for (int i = 0;i< kk.size();i++){
+		file<<kk.at(i).x<<kk.at(i).y<<endl;
+		}*/
+	file.close();
+}
+void print_save_files() {
+	cout << "This is the list of save files" <<endl;
+	DIR *dpdf;
+	struct dirent *epdf;
+
+	dpdf = opendir("./savefolder/");
+	int counter=0;
+	if (dpdf !=NULL) {
+		while (epdf = readdir(dpdf)) {
+			//cout << epdf->d_name << std:: endl;
+			filenames.push_back(epdf->d_name);
+			cout<< filenames.at(counter)<<endl;
+			counter++;
+		}
+	}
+
+	closedir(dpdf);
+
+}
+vector <string>name;
+vector<int>playerscore;
+void file_score(){
+	string line;
+	cout<<"check\n";
+	DIR *dpdf;
+	struct dirent *epdf;
+
+	dpdf = opendir("./savefolder/");
+
+	for (int i = 0; i <filenames.size(); i ++){
+		cout<<"For loop\n";
+		ifstream file(filenames.at(i));
+		file.open(filenames.at(i));
+		int cool=0;
+		while (getline(file,line)){
+			cout<<"While loop\n";
+			if (cool=0){name.push_back(line);
+				cout<<name.at(i);
+			}else{
+				playerscore.push_back(stoi(line));
+				cout<<playerscore.at(i);}
+		}
+	}
+} 
+
+
 class Key{
 	public:
 		Key (int new_x,int new_y) : x(new_x), y(new_y){}
@@ -80,8 +157,7 @@ void reset_world() {
 				world[index(i, j)] = WALL;
 			else
 				world[index(i, j)] = OPEN;
-
-			if (world[index( i,j)]==OPEN && rand() %140<KEYS_PLZ && count<1||world[index( i,j)]==OPEN && rand() %500<KEYS_PLZ && count<1&&i==SIZE_X-1&&j==SIZE_Y-1){
+			if (world[index( i,j)]==OPEN && rand() %350<KEYS_PLZ && count<1||world[index( i,j)]==OPEN && rand() %500<KEYS_PLZ && count<1&&i==SIZE_X-2&&j==SIZE_Y-2){
 				world[index(i,j)] = KEY;
 				keys.push_back(Key(i,j));
 				count++;
@@ -101,7 +177,7 @@ void print_world() {
 	for (int i = 0; i < SIZE_X; i++) {
 		for (int j = 0; j < SIZE_Y; j++) {
 			if (i == cursor_x && j == cursor_y){
-					
+
 				attron(A_UNDERLINE| A_BOLD);
 			}
 			int color = 1;
@@ -121,10 +197,14 @@ void print_world() {
 }
 
 int main() {
+	print_save_files();
+	file_score();
 	//Initialize random number generator
 	srand(time(NULL));
-
-
+	string s;
+	clear();
+	cout<<"Choose a name!\n";
+	cin>>s;
 	//Set up NCURSES
 	initscr();//Start curses mode
 	start_color(); //Enable Colors if possible
@@ -146,11 +226,16 @@ int main() {
 	cursor_x = SIZE_X / 2, cursor_y = SIZE_Y / 2; //Cursor for drawing stuff
 	game_on = true;
 	while (true) {
+		save(s,score);
 		mvprintw(SIZE_X + 0, 0, "Score: %d", score);
 		mvprintw(SIZE_X + 1, 0, "Type Q to quit");
 
+
 		int ch = getch(); // Wait for user input, with TIMEOUT delay
-		if (ch == 'q' || ch == 'Q') break;
+		if (ch == 'q' || ch == 'Q'){
+
+			save(s,score);
+			break;}
 		/*else if (ch == 'm' || ch == 'M') {
 		  if (world[index(cursor_x, cursor_y)] == OPEN) {
 		  world[index(cursor_x, cursor_y)] = MONSTER;
@@ -162,7 +247,7 @@ int main() {
 			mvprintw(SIZE_X + 2, 0, "You have been slain!");
 			print_world();
 			refresh();
-			wait_ticks(300000);
+			//	wait_ticks(300000);
 			exit(1);
 		}
 		if(world[index(cursor_x, cursor_y)] == KEY){
@@ -195,7 +280,7 @@ int main() {
 
 		//Run the AI
 		if (game_on) {
-			for (Monster &c: monsters){	
+			for (Monster &c: monsters){
 				c.think();
 
 			}
@@ -204,13 +289,12 @@ int main() {
 		clear();
 		print_world();
 		refresh();
-
+		save (s,score);
 	}
 	clear();
 	print_world();
 	refresh();
-	wait_ticks(300000);
+	//wait_ticks(30000);
 	system("clear");
 
 }
-
