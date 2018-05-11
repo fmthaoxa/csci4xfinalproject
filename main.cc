@@ -17,11 +17,14 @@
 #include<dirent.h>
 #include<stdio.h>
 #include <string.h>
+#include <string>
+#include <algorithm>
 
 using namespace std;
 class Save;
 class Monster;
 class Key;
+class Both;
 const unsigned char OPEN = ' '; //An open space
 const unsigned char WALL = '#'; //A wall space; impassable
 const unsigned char MONSTER = 'M';
@@ -86,9 +89,11 @@ void print_save_files() {
 	if (dpdf !=NULL) {
 		while (epdf = readdir(dpdf)) {
 			//cout << epdf->d_name << std:: endl;
+			if (epdf->d_name[0]!='.'){
 			filenames.push_back(epdf->d_name);
-			cout<< filenames.at(counter)<<endl;
-			counter++;
+		//	cout<< filenames.at(counter)<<endl;
+		//	counter++;
+			}
 		}
 	}
 
@@ -97,6 +102,17 @@ void print_save_files() {
 }
 vector <string>name;
 vector<int>playerscore;
+class Both{
+	public:
+	Both(string name,int score){names=name;
+		score=scores;
+	}
+	string names;
+	int scores;
+	bool operator<(Both a){
+		return a.scores<scores;
+	}
+};
 void file_score(){
 	string line;
 	cout<<"check\n";
@@ -106,22 +122,40 @@ void file_score(){
 	dpdf = opendir("./savefolder/");
 
 	for (int i = 0; i <filenames.size(); i ++){
+		string temp="./savefolder/"+filenames.at(i);
 		cout<<"For loop\n";
-		ifstream file(filenames.at(i));
-		file.open(filenames.at(i));
+		ifstream file;
+		file.open(temp);
+		//cout << "File is open\n";
 		int cool=0;
-		while (getline(file,line)){
-			cout<<"While loop\n";
-			if (cool=0){name.push_back(line);
-				cout<<name.at(i);
-			}else{
-				playerscore.push_back(stoi(line));
-				cout<<playerscore.at(i);}
-		}
+		//if(file.is_open())cout<<"here\n";
+		
+		//cout << temp << endl;
+		//cout<<filenames.at(i);
+		line.clear();
+		getline(file,line);
+		//cout<<line<<endl;
+		name.push_back(line);
+		cout<<name.at(i)<<endl;
+		getline(file,line);
+		playerscore.push_back(stoi(line));
+		cout<<playerscore.at(i)<<endl;
+		file.close();
+		
 	}
 } 
-
-
+vector <Both> both;
+void combine(){
+	
+	for (int i =0; i <name.size();i++){
+		string s=name.at(i);
+		
+		int k = playerscore.at(i);
+		Both b(s,k);
+		both.push_back(b);
+		
+	}
+}
 class Key{
 	public:
 		Key (int new_x,int new_y) : x(new_x), y(new_y){}
@@ -197,13 +231,17 @@ void print_world() {
 }
 
 int main() {
-	print_save_files();
-	file_score();
 	//Initialize random number generator
 	srand(time(NULL));
 	string s;
 	clear();
 	cout<<"Choose a name!\n";
+	cin>>s;
+	print_save_files();
+	file_score();
+	combine();
+	sort(both.begin(),both.end());
+	cout<<both.size();
 	cin>>s;
 	//Set up NCURSES
 	initscr();//Start curses mode
